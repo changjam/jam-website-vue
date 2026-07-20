@@ -1,19 +1,13 @@
 <script setup lang="ts">
 import LocaleSwitch from '@/components/LocaleSwitch.vue'
-import Hero from '@/components/Hero.vue'
-import About from '@/components/About.vue'
-import Skills from '@/components/Skills.vue'
-import Contact from '@/components/Contact.vue'
+import GraphView from '@/components/GraphView.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-bg text-ink">
+  <div class="flex h-screen w-screen items-center justify-center overflow-hidden bg-bg text-ink">
     <LocaleSwitch />
     <main>
-      <Hero />
-      <About />
-      <Skills />
-      <Contact />
+      <GraphView />
     </main>
   </div>
 </template>

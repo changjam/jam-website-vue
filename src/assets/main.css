@@ -10,7 +10,15 @@
     -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", Roboto, sans-serif;
 }
 
+html,
+body,
+#app {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
+  margin: 0;
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);

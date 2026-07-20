@@ -1,6 +1,6 @@
 # jam-website-vue 規劃文件
 
-這份文件規劃一個全新的個人一頁式介紹網站：以 **Vue 3 + Tailwind CSS** 開發成 SPA、不考慮 SEO，風格走簡潔留白、幾乎無動畫的路線，配色沿用現有 [jam-website-nuxt](../jam-website-nuxt) 的深藍／灰藍色調。完成後透過 GitHub Actions 部署到 GitHub Pages（預設 `github.io` 網址）。讀者是 Jam 本人，讀完可以確認技術選型、內容架構、視覺規則與 CI/CD 流程是否符合預期，核准後即可依此文件開始開發。
+這份文件規劃一個全新的個人一頁式介紹網站：以 **Vue 3 + Tailwind CSS** 開發成 SPA、不考慮 SEO，畫面不需捲動，改以「以 Jam 為中心節點、技能／經歷延伸出去」的節點圖（mermaid mindmap 的視覺概念）呈現，點擊節點會彈出 detail popup，配色沿用現有 [jam-website-nuxt](../jam-website-nuxt) 的深藍／灰藍色調，並加入適度的進場與互動動畫。完成後透過 GitHub Actions 部署到 GitHub Pages（預設 `github.io` 網址）。讀者是 Jam 本人，讀完可以確認技術選型、內容架構、視覺規則與 CI/CD 流程是否符合預期，核准後即可依此文件開始開發。
 
 ## 架構概覽
 
@@ -12,15 +12,17 @@ mindmap
       Tailwind CSS
       無 Vue Router（單頁免切換）
       輕量自製 i18n（zh / en）
-    內容區塊
-      Hero（姓名／職稱／一句話介紹）
-      About（簡短自我介紹）
-      Skills（技能標籤）
-      Contact（社群連結）
+    節點圖內容
+      中心節點（姓名／職稱／一句話介紹）
+      About 節點（自我介紹）
+      技能節點（前端／後端／AI／DevOps）
+      Contact 節點（社群連結）
+      點擊節點彈出 detail popup
     視覺規則
       沿用深藍／灰藍配色
-      大量留白、無陰影漸層
-      僅保留極輕的 transition
+      單一畫面、不捲動、大量留白
+      進場淡入 + 節點連線動畫
+      hover／popup 使用適度過渡動畫
     CI/CD
       GitHub Actions build
       upload-pages-artifact
@@ -31,16 +33,17 @@ mindmap
 ## 目標與非目標
 
 **目標**
-- 一頁式個人介紹，訪客滑一次就能看完。
-- 視覺乾淨、留白充足，資訊密度低。
+- 單一畫面的個人介紹，不需捲動，以節點圖（Jam 為中心、技能／經歷為外圍節點）呈現。
+- 視覺乾淨、留白充足，資訊密度低；點擊節點才展開細節，預設畫面保持簡潔。
 - 中英文可切換。
+- 適度的進場與互動動畫（節點淡入、連線繪製、popup 過渡），但不過度花俏。
 - 推送到 `main` 後自動建置並部署到 GitHub Pages。
 
 **非目標**
 - 不做 SEO（沒有 meta/OG 優化、sitemap、prerender）。
 - 不做履歷式的條列經歷、時間軸。
 - 不做多頁路由、CMS、後端 API。
-- 不追求視覺特效或互動亮點（無 hover 浮動、無卡片翻轉等）。
+- 不做誇張的視覺特效（卡片翻轉、大幅位移的 hover 浮動、粒子效果等）。
 
 ## 技術選型
 
@@ -67,20 +70,27 @@ mindmap
 | `accent-light` | `#b9d9fa` | 次要強調（極少量點綴） | `$light-blue` |
 
 **設計約束**：
-- 排版以垂直單欄為主，大量 `padding`/`margin`，行寬限制在易讀範圍（約 `max-w-2xl`）。
+- 整個畫面固定在單一 viewport（`h-screen overflow-hidden`），不捲動；節點圖置中，依 `min(vw, vh)` 縮放以適應各種螢幕。
 - 字體使用系統字體堆疊（`-apple-system, "PingFang TC", "Segoe UI", sans-serif`），不額外載入 Web Font，維持輕量與一致觀感。
-- 不使用陰影、漸層、卡片浮起效果；元素之間用留白和一條細分隔線（`border-ink/10`）區分即可。
-- 動畫僅保留必要的輕量過渡：語言切換的文字淡入淡出、頁面首次載入的淡入，時長 150–200ms（Tailwind `transition-opacity duration-150`），不做位移/縮放類的 hover 效果。
-- 技能標籤為純靜態文字方塊，不做點擊互動（與 nuxt 版本的可點擊技能樹不同）。
+- 節點與中心卡片不使用陰影、漸層；popup 允許一層淺陰影以區隔浮層與背景。
+- 動畫規則：
+  - 進場：中心節點與外圍節點依序淡入 + 輕微縮放（各節點加上小段 `transition-delay` 做出從中心擴散的效果），連線用 SVG `stroke-dashoffset` 做「畫出來」的效果。
+  - Hover／focus：節點邊框轉為強調色並些微放大（`scale(1.08)`），不做位移型的浮動。
+  - Popup：淡入 + 輕微縮放進場、淡出退場，約 150–200ms。
+  - 語言切換：文字淡入淡出。
+- 技能等節點本身只顯示標籤文字，詳細內容（技能清單、自介段落、聯絡連結）點擊後才在 popup 顯示。
 
 ## 內容規劃
 
-一頁四個區塊，由上而下：
+畫面不捲動，改以節點圖呈現：
 
-1. **Hero** — 姓名、職稱、一句話介紹（大留白置中或靠左）。
-2. **About** — 1–2 段簡短自我介紹文字，不走履歷式條列。
-3. **Skills** — 技能標籤（可比照 nuxt 版分類：前端／後端／AI／DevOps／Extension），純展示、無互動。
-4. **Contact** — GitHub / LinkedIn / Gmail / IG 等連結，文字或極簡線性 icon，不用按鈕陰影。
+- **中心節點** — 姓名、職稱、一句話介紹，固定顯示、不可點擊。
+- **外圍節點**（環繞中心，點擊後彈出 popup 顯示細節）：
+  1. **About** — 1–2 段簡短自我介紹文字，不走履歷式條列。
+  2. **Frontend / Backend / AI / DevOps** — 各自對應一組技能標籤。
+  3. **Contact** — GitHub / LinkedIn / Email 等連結。
+
+節點統一用 `label` + `content`（`text` / `tags` / `links` 三種類型之一）描述，方便之後增減節點或調整內容類型。
 
 文案內容（姓名、職稱、自介文字、技能清單、連結網址）由 Jam 後續提供或直接沿用 nuxt 版本 [locales/zh-tw.json](../jam-website-nuxt/locales/zh-tw.json) 整理精簡版，開發時先用 placeholder 撐版。
 
@@ -93,16 +103,18 @@ jam-website-vue/
 │   └── favicon 等靜態資源
 ├── src/
 │   ├── main.ts
-│   ├── App.vue                     # 組裝四個區塊
+│   ├── App.vue                     # 全螢幕不捲動容器，組裝 GraphView
 │   ├── components/
-│   │   ├── Hero.vue
-│   │   ├── About.vue
-│   │   ├── Skills.vue
-│   │   ├── Contact.vue
+│   │   ├── GraphView.vue           # 節點圖容器：SVG 連線 + 節點排版 + popup 開關
+│   │   ├── CenterNode.vue          # 中心節點（姓名／職稱／一句話介紹）
+│   │   ├── SkillNode.vue           # 外圍節點（可點擊，含進場/hover 動畫）
+│   │   ├── NodeDetail.vue          # 節點 detail popup
 │   │   └── LocaleSwitch.vue
 │   ├── composables/
-│   │   └── useLocale.ts
+│   │   ├── useLocale.ts            # 中英文切換
+│   │   └── useGraphLayout.ts       # 依節點數量計算環繞座標與進場延遲
 │   ├── locales/
+│   │   ├── types.ts                # Dictionary / GraphNode 型別
 │   │   ├── zh.ts
 │   │   └── en.ts
 │   └── assets/main.css             # @import "tailwindcss" + theme tokens

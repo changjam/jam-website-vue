@@ -1,32 +1,28 @@
-export interface SkillGroup {
-  category: string
-  items: string[]
-}
-
 export interface ContactLink {
   label: string
   href: string
 }
 
+export type NodeContent =
+  | { type: 'text'; paragraphs: string[] }
+  | { type: 'tags'; items: string[] }
+  | { type: 'links'; items: ContactLink[] }
+
+export interface GraphNode {
+  id: string
+  label: string
+  content: NodeContent
+}
+
 export interface Dictionary {
-  hero: {
+  center: {
     name: string
     title: string
     tagline: string
   }
-  about: {
-    heading: string
-    paragraphs: string[]
-  }
-  skills: {
-    heading: string
-    groups: SkillGroup[]
-  }
-  contact: {
-    heading: string
-    links: ContactLink[]
-  }
+  nodes: GraphNode[]
   localeSwitch: {
     label: string
   }
+  closeLabel: string
 }
