@@ -182,6 +182,20 @@ const zh: Dictionary = {
             link: 'https://github.com/changjam/Text_Editor',
             tags: ['Java'],
           },
+          {
+            name: 'Online Shopping System',
+            desc: '資料庫課程實作的線上購物網站課堂專案。',
+            image: 'online_shopping_system',
+            link: 'https://github.com/changjam/Simple_Online_Shopping_System',
+            tags: ['HTML', 'PHP', 'CSS'],
+          },
+          {
+            name: 'Fake Image Server',
+            desc: '會回傳假圖片的伺服器，方便網頁開發時當佔位圖使用。',
+            image: 'fake_image_server',
+            link: 'https://github.com/changjam/Fake_Image_Server',
+            tags: ['JS'],
+          },
         ],
       },
     },
@@ -322,7 +336,7 @@ const zh: Dictionary = {
     localeSwitch: 'EN',
     close: '關閉',
     viewProject: '查看專案',
-    hintDrag: '拖曳可移動畫布 · 點擊節點看詳情',
+    hintDrag: '點擊節點看詳情',
   },
 }
 

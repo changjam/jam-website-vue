@@ -182,6 +182,20 @@ const en: Dictionary = {
             link: 'https://github.com/changjam/Text_Editor',
             tags: ['Java'],
           },
+          {
+            name: 'Online Shopping System',
+            desc: 'A classwork project implementing an online shopping site with a database.',
+            image: 'online_shopping_system',
+            link: 'https://github.com/changjam/Simple_Online_Shopping_System',
+            tags: ['HTML', 'PHP', 'CSS'],
+          },
+          {
+            name: 'Fake Image Server',
+            desc: 'A server that returns placeholder images, handy for web development.',
+            image: 'fake_image_server',
+            link: 'https://github.com/changjam/Fake_Image_Server',
+            tags: ['JS'],
+          },
         ],
       },
     },
@@ -322,7 +336,7 @@ const en: Dictionary = {
     localeSwitch: '中',
     close: 'Close',
     viewProject: 'View project',
-    hintDrag: 'Drag to pan · Click a node for details',
+    hintDrag: 'Click a node for details',
   },
 }
 

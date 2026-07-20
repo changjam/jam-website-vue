@@ -16,9 +16,8 @@ const activeNode = computed<GraphNode | null>(
   () => t.value.nodes.find((n) => n.id === activeId.value) ?? null,
 )
 
-// ── fit + pan ──
+// ── fit the whole map into the viewport ──
 const scale = ref(1)
-const pan = ref({ x: 0, y: 0 })
 
 function computeScale() {
   const pad = 48
@@ -26,42 +25,8 @@ function computeScale() {
   scale.value = Math.max(0.42, Math.min(1, s))
 }
 
-const dragging = ref(false)
-const suppressClick = ref(false)
-let start = { x: 0, y: 0, px: 0, py: 0 }
-let moved = false
-
-function onDown(e: PointerEvent) {
-  // ignore right-click; let button clicks proceed without pointer capture
-  if (e.button !== 0) return
-  dragging.value = true
-  moved = false
-  start = { x: e.clientX, y: e.clientY, px: pan.value.x, py: pan.value.y }
-  window.addEventListener('pointermove', onMove)
-  window.addEventListener('pointerup', onUp, { once: true })
-}
-function onMove(e: PointerEvent) {
-  if (!dragging.value) return
-  const dx = e.clientX - start.x
-  const dy = e.clientY - start.y
-  if (!moved && Math.hypot(dx, dy) > 6) moved = true
-  if (moved) {
-    pan.value = { x: start.px + dx, y: start.py + dy }
-    suppressClick.value = true
-  }
-}
-function onUp() {
-  dragging.value = false
-  window.removeEventListener('pointermove', onMove)
-  setTimeout(() => (suppressClick.value = false), 0)
-}
-
 function openNode(node: GraphNode) {
-  if (suppressClick.value) return
   activeId.value = node.id
-}
-function recenter() {
-  pan.value = { x: 0, y: 0 }
 }
 
 onMounted(() => {
@@ -72,17 +37,13 @@ onBeforeUnmount(() => window.removeEventListener('resize', computeScale))
 </script>
 
 <template>
-  <div
-    class="viewport"
-    :class="{ grabbing: dragging }"
-    @pointerdown="onDown"
-  >
+  <div class="viewport">
     <div
       class="stage"
       :style="{
         width: `${CANVAS.w}px`,
         height: `${CANVAS.h}px`,
-        transform: `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
+        transform: `translate(-50%, -50%) scale(${scale})`,
       }"
     >
       <RoughConnectors :nodes="positioned" />
@@ -113,7 +74,6 @@ onBeforeUnmount(() => window.removeEventListener('resize', computeScale))
     </div>
 
     <p class="hint">{{ t.ui.hintDrag }}</p>
-    <button v-if="pan.x || pan.y" class="recenter" @click="recenter">⟳</button>
 
     <DetailPanel :node="activeNode" :ui="t.ui" @close="activeId = null" />
   </div>
@@ -124,11 +84,6 @@ onBeforeUnmount(() => window.removeEventListener('resize', computeScale))
   position: fixed;
   inset: 0;
   overflow: hidden;
-  cursor: grab;
-  touch-action: none;
-}
-.viewport.grabbing {
-  cursor: grabbing;
 }
 .stage {
   position: absolute;
@@ -152,21 +107,5 @@ onBeforeUnmount(() => window.removeEventListener('resize', computeScale))
   opacity: 0.7;
   pointer-events: none;
   white-space: nowrap;
-}
-.recenter {
-  position: fixed;
-  bottom: 14px;
-  right: 16px;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--color-paper);
-  color: var(--color-navy);
-  font-size: 1.3rem;
-  box-shadow: 0 6px 14px rgba(38, 50, 61, 0.16);
-  transition: transform 200ms ease;
-}
-.recenter:hover {
-  transform: rotate(-90deg);
 }
 </style>
