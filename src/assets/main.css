@@ -1,13 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #fdfdfa;
-  --color-ink: #121e2a;
-  --color-accent: #446c94;
-  --color-accent-light: #b9d9fa;
+  /* paper */
+  --color-paper: #f6f1e7;
+  --color-paper-deep: #ece3d2;
+  --color-ink: #26323d;
+  --color-ink-soft: #5a6672;
 
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", Roboto, sans-serif;
+  /* branch palette (warm, hand-drawn friendly, anchored on the navy brand) */
+  --color-navy: #35597f;
+  --color-frontend: #2f8f83;
+  --color-backend: #c77b34;
+  --color-ai: #8a5cc0;
+  --color-devops: #4e7cc9;
+  --color-extension: #c25b6e;
+  --color-career: #b5502e;
+  --color-education: #5c9a46;
+  --color-projects: #cf9a2b;
+  --color-contact: #4a6572;
+
+  --font-hand: "Caveat", "Gaegu", cursive;
+  --font-round: "Nunito", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --font-body:
+    "Nunito", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", -apple-system,
+    BlinkMacSystemFont, sans-serif;
 }
 
 html,
@@ -19,7 +35,23 @@ body,
 
 body {
   margin: 0;
-  background-color: var(--color-bg);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
+  /* warm paper gradient + faint grain via layered radial dots */
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.7), transparent 42%),
+    radial-gradient(circle at 82% 82%, rgba(53, 89, 127, 0.06), transparent 45%),
+    radial-gradient(rgba(38, 50, 61, 0.045) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 22px 22px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  border-radius: 9999px;
 }
